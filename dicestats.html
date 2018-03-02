@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Probability</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container">
+
+            <h4>Calculates the probability of each dice roll 2-12, by using a single 2-12 dice or two separate 1-6 rolls.</h4>
+        <button id="btnplay" class="button btn-lg">Calculate</button>
+        <br><br>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Rolled single 2-12 dice</th>
+                    <th>Rolled two 1-6 die</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyScore">
+                <tr></tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>
+
+<script>
+    
+$().ready(function(){
+    function RollTwo(){return (Math.floor(Math.random() * 6) + 1) + (Math.floor(Math.random() * 6) + 1) ;}
+    function Roll(){return Math.floor(Math.random() * 11) + 2;}
+    $("#btnplay").on('click', function(){
+        var rolls = 1000000;
+        for(var i = 2; i < 13; i++){
+            var twiceCount = 0;
+            var singleCount = 0;
+            for(var r = 0; r < rolls; r++){
+                if(Roll() == i)
+                    twiceCount++;
+                if(RollTwo() == i)
+                    singleCount++;
+        }
+        var percent1 = (twiceCount / rolls) * 100;
+        var percent2 = (singleCount / rolls) * 100;
+        $('#tbodyScore').last().append("<tr><td>" + i +"</td><td>" + percent1.toFixed(2) + "%</td><td>" + percent2.toFixed(2) +"%</td></tr>");
+        }
+    });
+});
+</script>
