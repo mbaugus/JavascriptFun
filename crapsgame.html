@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Craps</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 id="result" class="display-3">Craps (the game)</h1>
+            <p id="rollLabel" class="lead">Baby need a new laptop.</p>
+        </div>
+        <button id="btnplay">Shoot it!</button> <span id="totals">Wins: 0 Losses: 0</span>
+
+        <br><br>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>Win/Loss</th>
+                    <th>Rolls</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyScore">
+                <tr></tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>
+
+<script>
+    
+$().ready(function(){
+    var win = 0;
+    var loss = 0;
+    function Roll()
+    {
+        // doing two 1-6 rolls added together.  I was going to do a 2-12 roll but i think that
+        // changes the probability, since different rolls can add up to the same number
+        // so there are better odds of getting a certain combinations.  (much easier to roll a 8 than a 12)
+        // i could be wrong though!!
+        return (Math.floor(Math.random() * 6) + 1) + (Math.floor(Math.random() * 6) + 1) ;
+    }
+    function PlayGame(){
+        // first turn 7,11 win and 2,3, 12 are losses
+        // other nmbers become the "point"
+        var Score = {
+            Win : false,
+            Rolls: []
+        }
+        while(true){
+            // second turn and onward
+            // 7 is loss, the point is a win, other numbers keep rolling
+            var firstRoll = Roll();
+            Score.Rolls.push(firstRoll);
+            if(firstRoll == 7 || firstRoll == 11){
+                Score.Win = true;
+                break
+            }
+            if(firstRoll == 2 || firstRoll == 3 || firstRoll == 12){
+                Score.Win = false;
+                break;
+            }
+
+            while(true){
+                var roll = Roll();
+                Score.Rolls.push(roll);
+                if(roll == 7){
+                    Score.Win = false;
+                    break;
+                }
+                if(roll == firstRoll){
+                    Score.Win = true;
+                    break;
+                }
+            }
+            break;
+        }
+            return Score;
+    }
+
+    function DisplayGame(score){
+        var scores = score.Rolls.join(", ");
+        var winner = "";
+        if(score.Win == true){
+            winner = "Winner";
+            win++
+        }
+        else{
+            loss++;
+            winner = "Loser!";
+        }
+
+        $("#result").text(winner);
+        $("#rollLabel").text(scores);
+        var row = "<tr><td>" + winner + "</td>" + "<td>" + scores + "</td></tr>";
+        $(row).insertBefore('#tbodyScore tr:first');
+        $("#totals").text("Wins: " + win + " Losses: " + loss);
+        
+    }
+
+
+    $("#btnplay").on('click', function(){
+        DisplayGame(PlayGame());
+    });
+});
+</script>
